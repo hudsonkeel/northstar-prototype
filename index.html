@@ -1,21 +1,1182 @@
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Northstar Match Prototype</title>
+  <meta charset="UTF-8" />
+  <title>Northstar Match – Recruiter Prototype</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --ns-navy: #0b1f3b;
+      --ns-navy-soft: #111827;
+      --ns-green: #0f7a3b;
+      --ns-green-bright: #16a34a;
+      --ns-yellow: #facc15;
+      --ns-bg: #0b1020;
+      --ns-bg-elevated: #0f172a;
+      --ns-border-subtle: #1f2937;
+      --ns-text: #e5e7eb;
+      --ns-text-soft: #9ca3af;
+      --ns-pill: #111827;
+      --ns-danger: #ef4444;
+      --ns-warning: #f97316;
+      --ns-ok: #22c55e;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.75);
+      --shadow-subtle: 0 8px 24px rgba(15, 23, 42, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #020617 0, #020617 25%, #020617 40%, #020617 60%, #020617 100%);
+      color: var(--ns-text);
+      min-height: 100vh;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: 260px minmax(0, 1fr);
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, #111827 0, #020617 45%, #020617 100%);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: linear-gradient(180deg, #020617 0%, #020617 45%, #020617 100%);
+      border-right: 1px solid var(--ns-border-subtle);
+      padding: 20px 18px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .brand-compact {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    .brand-compact img {
+      height: 40px;
+      width: auto;
+      border-radius: 8px;
+      background: #020617;
+    }
+
+    .brand-compact-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-compact-text span:first-child {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .brand-compact-text span:last-child {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--ns-text-soft);
+    }
+
+    .sidebar-pill {
+      margin-top: 4px;
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      background: rgba(15, 118, 110, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      font-size: 11px;
+      color: var(--ns-text-soft);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar-pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #bbf7d0 0, #22c55e 32%, #15803d 100%);
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.8);
+    }
+
+    .nav-section {
+      margin-top: 16px;
+    }
+
+    .nav-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--ns-text-soft);
+      margin-bottom: 8px;
+    }
+
+    .nav-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--ns-text-soft);
+      cursor: default;
+    }
+
+    .nav-item.active {
+      color: var(--ns-text);
+      background: linear-gradient(90deg, rgba(56, 189, 248, 0.15), rgba(34, 197, 94, 0.05));
+      border: 1px solid rgba(56, 189, 248, 0.5);
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      color: var(--ns-text-soft);
+    }
+
+    .nav-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.8);
+    }
+
+    .nav-item.active .nav-dot {
+      background: #38bdf8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.9);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 11px;
+      color: var(--ns-text-soft);
+      border-top: 1px solid var(--ns-border-subtle);
+      padding-top: 10px;
+    }
+
+    .sidebar-footer strong {
+      color: #e5e7eb;
+    }
+
+    /* Main Panel */
+    .main {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 22px;
+      background: linear-gradient(90deg, #020617 0%, #020617 40%, #020617 100%);
+      border-bottom: 1px solid var(--ns-border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(20px);
+    }
+
+    .header-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .header-title {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .header-title h1 {
+      font-size: 22px;
+      font-weight: 650;
+    }
+
+    .header-title .pill {
+      font-size: 11px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 3px 9px;
+      color: var(--ns-text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 12px rgba(34, 197, 94, 0.9);
+    }
+
+    .header-subtitle {
+      font-size: 12px;
+      color: var(--ns-text-soft);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .header-tag {
+      font-size: 11px;
+      color: var(--ns-text-soft);
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--ns-border-subtle);
+      padding: 5px 9px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.85);
+    }
+
+    .header-btn {
+      border-radius: var(--radius-pill);
+      border: none;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: radial-gradient(circle at 30% 0, #4ade80 0, #16a34a 40%, #15803d 100%);
+      color: #022c22;
+      box-shadow: 0 10px 30px rgba(34, 197, 94, 0.6);
+    }
+
+    .header-btn span.icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 16px;
+      height: 16px;
+      border-radius: 999px;
+      background: rgba(6, 95, 70, 0.15);
+      border: 1px solid rgba(6, 95, 70, 0.6);
+      font-size: 11px;
+    }
+
+    /* Content Layout */
+    .content {
+      padding: 18px 22px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .kpi-card {
+      background: radial-gradient(circle at top left, #111827 0, #020617 55%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 12px 14px;
+      box-shadow: var(--shadow-subtle);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .kpi-label {
+      font-size: 11px;
+      color: var(--ns-text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .kpi-main {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 4px;
+    }
+
+    .kpi-value {
+      font-size: 22px;
+      font-weight: 650;
+    }
+
+    .kpi-chip {
+      font-size: 11px;
+      border-radius: var(--radius-pill);
+      padding: 3px 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.7);
+      color: var(--ns-text-soft);
+    }
+
+    .kpi-trend {
+      font-size: 11px;
+      color: var(--ns-ok);
+    }
+
+    .kpi-trend.down {
+      color: var(--ns-danger);
+    }
+
+    .kpi-subtext {
+      font-size: 11px;
+      color: var(--ns-text-soft);
+    }
+
+    /* Main grids */
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .card {
+      background: radial-gradient(circle at top left, #111827 0, #020617 55%);
+      border-radius: var(--radius-lg);
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      padding: 14px 16px 14px;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title-pill {
+      font-size: 11px;
+      border-radius: var(--radius-pill);
+      padding: 2px 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.8);
+      color: var(--ns-text-soft);
+    }
+
+    .card-subtitle {
+      font-size: 11px;
+      color: var(--ns-text-soft);
+    }
+
+    .chip-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .chip {
+      font-size: 11px;
+      border-radius: var(--radius-pill);
+      padding: 3px 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      color: var(--ns-text-soft);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--ns-green-bright);
+    }
+
+    .chip-outline {
+      background: transparent;
+    }
+
+    /* Match radar list */
+    .match-list {
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .match-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) 80px 90px 84px;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 9px;
+      border-radius: 12px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: radial-gradient(circle at left, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 0.9));
+    }
+
+    .match-row:nth-child(2),
+    .match-row:nth-child(3) {
+      background: radial-gradient(circle at left, rgba(34, 197, 94, 0.16), rgba(15, 23, 42, 0.9));
+    }
+
+    .match-role {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .role-title {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .role-meta {
+      font-size: 11px;
+      color: var(--ns-text-soft);
+    }
+
+    .score-badge {
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 999px;
+      padding: 4px 0;
+      text-align: center;
+      background: radial-gradient(circle at 30% 0, #22c55e 0, #16a34a 40%, #166534 100%);
+      color: #022c22;
+    }
+
+    .score-badge.medium {
+      background: radial-gradient(circle at 30% 0, #facc15 0, #eab308 50%, #854d0e 100%);
+      color: #1f2937;
+    }
+
+    .score-badge.low {
+      background: radial-gradient(circle at 30% 0, #f97316 0, #ea580c 50%, #7c2d12 100%);
+      color: #fff7ed;
+    }
+
+    .match-chip {
+      font-size: 11px;
+      border-radius: 20px;
+      padding: 4px 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.8);
+      color: var(--ns-text-soft);
+      text-align: center;
+    }
+
+    .match-chip.strong {
+      border-color: rgba(34, 197, 94, 0.8);
+      color: #bbf7d0;
+    }
+
+    .match-chip.risk {
+      border-color: rgba(249, 115, 22, 0.85);
+      color: #fed7aa;
+    }
+
+    .match-chip.stretch {
+      border-style: dashed;
+    }
+
+    /* Candidate insights */
+    .candidate-list {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .candidate-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) 70px 110px;
+      gap: 8px;
+      align-items: center;
+      padding: 8px 9px;
+      border-radius: 12px;
+      border: 1px solid rgba(31, 41, 55, 0.9);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .candidate-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .candidate-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .candidate-meta {
+      font-size: 11px;
+      color: var(--ns-text-soft);
+    }
+
+    .fit-tag {
+      font-size: 11px;
+      border-radius: 999px;
+      padding: 4px 10px;
+      text-align: center;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--ns-text-soft);
+    }
+
+    .fit-tag.primary {
+      border-color: rgba(34, 197, 94, 0.9);
+      color: #bbf7d0;
+    }
+
+    .fit-tag.adjacent {
+      border-style: dashed;
+      border-color: rgba(59, 130, 246, 0.9);
+      color: #bfdbfe;
+    }
+
+    .fit-tag.misaligned {
+      border-color: rgba(248, 113, 113, 0.9);
+      color: #fecaca;
+    }
+
+    .fit-note {
+      font-size: 11px;
+      color: var(--ns-text-soft);
+      text-align: right;
+    }
+
+    /* Lower grid */
+    .lower-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      margin-top: 6px;
+    }
+
+    th,
+    td {
+      padding: 6px 6px;
+      text-align: left;
+    }
+
+    thead {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    th {
+      font-weight: 500;
+      color: var(--ns-text-soft);
+      border-bottom: 1px solid rgba(31, 41, 55, 0.9);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(31, 41, 55, 0.75);
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:nth-child(2n) {
+      background: rgba(15, 23, 42, 0.75);
+    }
+
+    .status-pill {
+      font-size: 11px;
+      border-radius: 999px;
+      padding: 2px 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--ns-text-soft);
+    }
+
+    .status-pill span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(148, 163, 184, 0.8);
+    }
+
+    .status-pill.hot span.dot {
+      background: #f97316;
+    }
+
+    .status-pill.healthy span.dot {
+      background: #22c55e;
+    }
+
+    .status-pill.stalled span.dot {
+      background: #f97316;
+    }
+
+    .status-pill.at-risk span.dot {
+      background: #ef4444;
+    }
+
+    .adjacent-list {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .adjacent-item {
+      border-radius: 12px;
+      border: 1px dashed rgba(37, 99, 235, 0.9);
+      background: rgba(15, 23, 42, 0.95);
+      padding: 8px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .adjacent-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+    }
+
+    .adjacent-title {
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .adjacent-score {
+      font-size: 11px;
+      color: #bfdbfe;
+    }
+
+    .adjacent-meta {
+      font-size: 11px;
+      color: var(--ns-text-soft);
+    }
+
+    .adjacent-tags {
+      margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .adjacent-tag {
+      font-size: 10px;
+      border-radius: 999px;
+      padding: 2px 7px;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      color: var(--ns-text-soft);
+    }
+
+    .adjacent-tag.primary {
+      border-color: rgba(37, 99, 235, 0.9);
+      color: #bfdbfe;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 1024px) {
+      .app-shell {
+        grid-template-columns: 220px minmax(0, 1fr);
+      }
+      .kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .main-grid,
+      .lower-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-shell {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .sidebar {
+        display: none;
+      }
+      .app-header {
+        padding-inline: 16px;
+      }
+      .content {
+        padding-inline: 16px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .match-row {
+        grid-template-columns: minmax(0, 1.4fr) 70px;
+        grid-template-rows: auto auto;
+      }
+      .match-row > :nth-child(3),
+      .match-row > :nth-child(4) {
+        margin-top: 4px;
+      }
+      .match-row > :nth-child(3),
+      .match-row > :nth-child(4) {
+        font-size: 10px;
+      }
+      .candidate-row {
+        grid-template-columns: minmax(0, 1.4fr);
+        grid-auto-rows: auto;
+      }
+      .fit-note {
+        text-align: left;
+      }
+    }
+  </style>
 </head>
 <body>
-  <div class="brand" style="display:flex; align-items:center; gap:12px;">
-    <img src="assets/northstar-logo.png" 
-         alt="Northstar Match Logo"
-         style="height:60px; width:auto;" />
-    <span style="font-size:28px; font-weight:700; color:#0B1F3B;">
-      Northstar <span style="color:#0F7A3B;">Match</span>
-    </span>
-  </div>
+  <div class="app-shell">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div>
+        <div class="brand-compact">
+          <img src="assets/northstar-logo.png" alt="Northstar Match Logo" />
+          <div class="brand-compact-text">
+            <span>Northstar Match</span>
+            <span>Talent alignment engine</span>
+          </div>
+        </div>
+        <div class="sidebar-pill">
+          <span class="sidebar-pill-dot"></span>
+          Design partner mode &middot; Recruiter sandbox
+        </div>
+      </div>
 
-  <h2>Prototype UI Loaded Successfully</h2>
-  <p>If you see the logo above, everything is wired correctly.</p>
+      <div class="nav-section">
+        <div class="nav-label">Main</div>
+        <ul class="nav-list">
+          <li class="nav-item active">
+            <span class="nav-dot"></span>
+            Overview &amp; Radar
+            <span class="nav-badge">Today</span>
+          </li>
+          <li class="nav-item">
+            <span class="nav-dot"></span>
+            Candidates
+            <span class="nav-badge">42</span>
+          </li>
+          <li class="nav-item">
+            <span class="nav-dot"></span>
+            Open roles
+            <span class="nav-badge">18</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Signals</div>
+        <ul class="nav-list">
+          <li class="nav-item">
+            <span class="nav-dot"></span>
+            High-intent matches
+            <span class="nav-badge">9</span>
+          </li>
+          <li class="nav-item">
+            <span class="nav-dot"></span>
+            At-risk pipelines
+            <span class="nav-badge">4</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <div>Viewing: <strong>Design partner prototype</strong></div>
+        <div>Real data & integrations to be configured.</div>
+      </div>
+    </aside>
+
+    <!-- MAIN PANEL -->
+    <main class="main">
+      <!-- HEADER -->
+      <header class="app-header">
+        <div class="header-main">
+          <div class="header-title">
+            <h1>Recruiter View &mdash; Match Radar</h1>
+            <span class="pill">
+              <span class="pill-dot"></span>
+              Live scoring snapshot &middot; Today
+            </span>
+          </div>
+          <div class="header-subtitle">
+            See which candidates, roles, and adjacent lanes are most likely to close &mdash; and where expectations are misaligned.
+          </div>
+        </div>
+        <div class="header-actions">
+          <div class="header-tag">
+            <span style="width:7px;height:7px;border-radius:999px;background:#4ade80;"></span>
+            Demo mode &middot; Sample data
+          </div>
+          <button class="header-btn" type="button">
+            <span class="icon">▶</span>
+            Run new match sweep
+          </button>
+        </div>
+      </header>
+
+      <!-- CONTENT -->
+      <div class="content">
+        <!-- KPI GRID -->
+        <section class="kpi-grid" aria-label="Key metrics">
+          <article class="kpi-card">
+            <div class="kpi-label">Active roles</div>
+            <div class="kpi-main">
+              <div class="kpi-value">18</div>
+              <div class="kpi-chip">7 healthcare &middot; 6 sales &middot; 5 ops</div>
+            </div>
+            <div class="kpi-subtext">5 roles tagged as priority by hiring managers.</div>
+          </article>
+
+          <article class="kpi-card">
+            <div class="kpi-label">Candidate pool</div>
+            <div class="kpi-main">
+              <div class="kpi-value">42</div>
+              <div class="kpi-chip">18 active &middot; 24 passive</div>
+            </div>
+            <div class="kpi-subtext">19 candidates with refreshed CV or questionnaire in last 7 days.</div>
+          </article>
+
+          <article class="kpi-card">
+            <div class="kpi-label">High-intent matches</div>
+            <div class="kpi-main">
+              <div class="kpi-value">9</div>
+              <div class="kpi-trend">+3 vs. last week</div>
+            </div>
+            <div class="kpi-subtext">Score ≥ 88 with strong behavioral and adjacency alignment.</div>
+          </article>
+
+          <article class="kpi-card">
+            <div class="kpi-label">Avg match score</div>
+            <div class="kpi-main">
+              <div class="kpi-value">81</div>
+              <div class="kpi-trend down">-4 vs. last week</div>
+            </div>
+            <div class="kpi-subtext">Slight quality dip &mdash; driven by three new stretch-role searches.</div>
+          </article>
+        </section>
+
+        <!-- MAIN GRID -->
+        <section class="main-grid">
+          <!-- Match Radar -->
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">
+                  Match Radar &mdash; Role x Candidate
+                  <span class="card-title-pill">Sorted by closing likelihood</span>
+                </div>
+                <div class="card-subtitle">
+                  Combines skills, trajectory, behavior fit, and compensation band to highlight the most realistic matches.
+                </div>
+              </div>
+            </div>
+
+            <div class="chip-row">
+              <span class="chip">
+                <span class="chip-dot"></span>
+                Focus: roles closing in &lt; 30 days
+              </span>
+              <span class="chip chip-outline">Filters: healthcare, sales leadership, US-based</span>
+            </div>
+
+            <div class="match-list">
+              <div class="match-row">
+                <div class="match-role">
+                  <div class="role-title">Senior Sales Director &mdash; Healthcare SaaS</div>
+                  <div class="role-meta">
+                    Candidate: <strong>A. Ramirez</strong> &middot; 11 yrs exp &middot; prefers hybrid &middot; comp target: 260k OTE
+                  </div>
+                </div>
+                <div class="score-badge">94</div>
+                <div class="match-chip strong">Strong mutual alignment</div>
+                <div class="match-chip">Top 3 lane &middot; intro ready</div>
+              </div>
+
+              <div class="match-row">
+                <div class="match-role">
+                  <div class="role-title">Director of Revenue Operations</div>
+                  <div class="role-meta">
+                    Candidate: <strong>M. Chen</strong> &middot; pivot from VP Sales &middot; comp target: 210k OTE
+                  </div>
+                </div>
+                <div class="score-badge">91</div>
+                <div class="match-chip strong">High close probability</div>
+                <div class="match-chip stretch">Title shift: IC &rarr; strategic ops</div>
+              </div>
+
+              <div class="match-row">
+                <div class="match-role">
+                  <div class="role-title">Regional Clinical Operations Manager</div>
+                  <div class="role-meta">
+                    Candidate: <strong>T. Johnson</strong> &middot; 7 yrs acute care &middot; open to relocation &middot; target: 145k
+                  </div>
+                </div>
+                <div class="score-badge medium">86</div>
+                <div class="match-chip">Good fit if travel flex is addressed</div>
+                <div class="match-chip risk">Risk: candidate prefers smaller systems</div>
+              </div>
+
+              <div class="match-row">
+                <div class="match-role">
+                  <div class="role-title">Enterprise AE &mdash; Fintech</div>
+                  <div class="role-meta">
+                    Candidate: <strong>S. Patel</strong> &middot; background in B2B SaaS &middot; wants earlier-stage environment
+                  </div>
+                </div>
+                <div class="score-badge low">79</div>
+                <div class="match-chip stretch">Stretch: industry change</div>
+                <div class="match-chip risk">Expectation gap: comp vs. realistic band</div>
+              </div>
+            </div>
+          </article>
+
+          <!-- Candidate Fit Insights -->
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">
+                  Candidate Fit Insights
+                </div>
+                <div class="card-subtitle">
+                  Highlights where candidate goals and role reality line up &mdash; and where realignment may be needed.
+                </div>
+              </div>
+            </div>
+
+            <div class="candidate-list">
+              <div class="candidate-row">
+                <div class="candidate-main">
+                  <div class="candidate-name">A. Ramirez &middot; Strategic Enterprise Sales</div>
+                  <div class="candidate-meta">
+                    Prefers: consultative sales, healthcare impact, stable but high-growth org.
+                  </div>
+                </div>
+                <div class="fit-tag primary">Primary lane locked</div>
+                <div class="fit-note">3 roles above 90+ match; ready for curated intros.</div>
+              </div>
+
+              <div class="candidate-row">
+                <div class="candidate-main">
+                  <div class="candidate-name">J. Morales &middot; Marketing Leader</div>
+                  <div class="candidate-meta">
+                    Aiming: VP-level, but current portfolio and scope align better with Senior Director roles.
+                  </div>
+                </div>
+                <div class="fit-tag misaligned">Title expectations high</div>
+                <div class="fit-note">Recommend “stretch” narrative or re-targeting adjacent roles.</div>
+              </div>
+
+              <div class="candidate-row">
+                <div class="candidate-main">
+                  <div class="candidate-name">T. Johnson &middot; Clinical Ops</div>
+                  <div class="candidate-meta">
+                    Prefers: regional autonomy, mission-driven care, limited travel (~25%).
+                  </div>
+                </div>
+                <div class="fit-tag primary">Ops leadership lane</div>
+                <div class="fit-note">2 roles at 86–89 score; strong fit if travel band negotiated.</div>
+              </div>
+
+              <div class="candidate-row">
+                <div class="candidate-main">
+                  <div class="candidate-name">K. Nguyen &middot; IC Engineer</div>
+                  <div class="candidate-meta">
+                    Currently applying only for Engineering Manager roles; strongest matches are Staff IC lanes.
+                  </div>
+                </div>
+                <div class="fit-tag adjacent">Adjacent IC lane suggested</div>
+                <div class="fit-note">Prompt coaching: “Staff IC as leadership track without people mgmt.”</div>
+              </div>
+            </div>
+          </article>
+        </section>
+
+        <!-- LOWER GRID -->
+        <section class="lower-grid">
+          <!-- Role Pipeline -->
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">
+                  Role Pipeline Health
+                </div>
+                <div class="card-subtitle">
+                  Where Northstar is confident you can close soon &mdash; and where the funnel needs help.
+                </div>
+              </div>
+            </div>
+
+            <table>
+              <thead>
+                <tr>
+                  <th>Role</th>
+                  <th>Stage</th>
+                  <th>Top match</th>
+                  <th>Score</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Senior Sales Director &mdash; Healthcare SaaS</td>
+                  <td>Final interviews</td>
+                  <td>A. Ramirez</td>
+                  <td>94</td>
+                  <td>
+                    <span class="status-pill healthy">
+                      <span class="dot"></span>
+                      On track
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Director of Revenue Operations</td>
+                  <td>Submitted</td>
+                  <td>M. Chen</td>
+                  <td>91</td>
+                  <td>
+                    <span class="status-pill hot">
+                      <span class="dot"></span>
+                      Hot start
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Regional Clinical Operations Manager</td>
+                  <td>Shortlist</td>
+                  <td>T. Johnson</td>
+                  <td>86</td>
+                  <td>
+                    <span class="status-pill stalled">
+                      <span class="dot"></span>
+                      Needs alignment call
+                    </span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Enterprise AE &mdash; Fintech</td>
+                  <td>Inbound interest only</td>
+                  <td>S. Patel</td>
+                  <td>79</td>
+                  <td>
+                    <span class="status-pill at-risk">
+                      <span class="dot"></span>
+                      Misaligned expectations
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </article>
+
+          <!-- Adjacent Lane Suggestions -->
+          <article class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">
+                  Adjacent Lane Suggestions
+                </div>
+                <div class="card-subtitle">
+                  Where candidates are aiming for the wrong hill &mdash; and the lanes where they’re more likely to win.
+                </div>
+              </div>
+            </div>
+
+            <div class="adjacent-list">
+              <div class="adjacent-item">
+                <div class="adjacent-header">
+                  <div class="adjacent-title">VP Marketing &rarr; Senior Director, GTM</div>
+                  <div class="adjacent-score">Lane match: 89</div>
+                </div>
+                <div class="adjacent-meta">
+                  Candidate targeting VP-only roles. Northstar sees faster close probability in Senior Director GTM seats
+                  with path to VP after 12–18 months.
+                </div>
+                <div class="adjacent-tags">
+                  <span class="adjacent-tag primary">Expectation coaching recommended</span>
+                  <span class="adjacent-tag">Better portfolio fit</span>
+                  <span class="adjacent-tag">Higher close likelihood</span>
+                </div>
+              </div>
+
+              <div class="adjacent-item">
+                <div class="adjacent-header">
+                  <div class="adjacent-title">Engineering Manager &rarr; Staff IC</div>
+                  <div class="adjacent-score">Lane match: 92</div>
+                </div>
+                <div class="adjacent-meta">
+                  Strong technical depth, light people management history. IC track offers comp parity with better skill alignment.
+                </div>
+                <div class="adjacent-tags">
+                  <span class="adjacent-tag primary">IC leadership narrative</span>
+                  <span class="adjacent-tag">High retention signal</span>
+                </div>
+              </div>
+
+              <div class="adjacent-item">
+                <div class="adjacent-header">
+                  <div class="adjacent-title">Hospital Ops &rarr; Multi-site Senior Living</div>
+                  <div class="adjacent-score">Lane match: 87</div>
+                </div>
+                <div class="adjacent-meta">
+                  Candidate coming from large hospital system may be better suited to regional senior living operations roles where
+                  autonomy and scope are higher.
+                </div>
+                <div class="adjacent-tags">
+                  <span class="adjacent-tag primary">Transferable ops skills</span>
+                  <span class="adjacent-tag">Broader leadership scope</span>
+                  <span class="adjacent-tag">Stronger mission fit</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        </section>
+      </div>
+    </main>
+  </div>
 </body>
 </html>
